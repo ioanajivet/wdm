@@ -6,8 +6,9 @@ import org.xml.sax.helpers.LocatorImpl;
 
 public class StackEval implements ContentHandler{
 
-//		private TreePattern q;
-		private TPEStack rootStack; // stack for the root of q
+		//private TreePattern q;
+		private PatternNode root = new PatternNode("food");
+		private TPEStack rootStack = new TPEStack(); // stack for the root of q
 		// pre number of the last element which has started:
 		private int currentPre = 0;
 		// pre numbers for all elements having started but not ended yet:
@@ -18,12 +19,15 @@ public class StackEval implements ContentHandler{
 			// TODO Auto-generated method stub
 			System.out.println("Opening tag : " + localName);
 			List<TPEStack> descendantStacks = rootStack.getDescendantStacks(); 
+			if (descendantStacks == null)
+				return;
 			for(TPEStack s : descendantStacks){
 				if(localName == s.getPatternNode().getName() && s.getTPEStack().top().getStatus() == 1){
 					Match m = new Match(currentPre, s.getTPEStack().top(), s);
 					// create a match satisfying the ancestor conditions
 					// of query node s.p
-					s.push(m); preOfOpenNodes.push(currentPre);
+					s.push(m); 
+					preOfOpenNodes.push(currentPre);
 				}
 				
 				currentPre ++;
@@ -62,26 +66,28 @@ public class StackEval implements ContentHandler{
 			System.out.println("Closing tag : " + localName);
 			// we need to find out if the element ending now corresponded
 						// to matches in some stacks
+			List<TPEStack> descendantStacks = rootStack.getDescendantStacks(); 
 						// first, get the pre number of the element that ends now:
-				//int preOflastOpen = preOfOpenNodes.pop();
+				int preOfLastOpen = preOfOpenNodes.pop();
 						// now look for Match objects having this pre number:
-		/*		for(s in rootStack.getDescendantStacks()){
-					if (s.p.name == localName && s.top().status == open &&) s.top().pre == preOfLastOpen){
+				for(TPEStack s : descendantStacks){
+					if (localName == s.getPatternNode().getName() && s.top().getStatus() == 1 && s.top().getPre() == preOfLastOpen){
 						// all descendants of this Match have been traversed by now.
 						Match m = s.pop();
 						// check if m has child matches for all children
 						// of its pattern node
-						for (pChild in s.p.getChildren()){
+						List<PatternNode> children = s.getPatternNode().getChildren(); 
+						for (PatternNode pChild: children){
 						// pChild is a child of the query node for which m was created
-							if (m.children.get(pChild) == null){
+							if (m.getChildren().get(pChild) == null){
 						// m lacks a child Match for the pattern node pChild
 						// we remove m from its Stack, detach it from its parent etc.
-								remove(m, s);
+								s.removeMatch(m);
 							}
 						}
 						m.close();
 					}
-				}*/
+				}
 			
 		}
 		

@@ -32,5 +32,10 @@ public class TPEStack {
 	public Match pop(){ 
 		return matches.pop(); 
 	}
+
+	public void removeMatch(Match m) {
+		// TODO Auto-generated method stub
+		
+	}
 		
 }
