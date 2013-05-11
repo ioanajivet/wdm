@@ -13,7 +13,8 @@ public class SaxExample {
 	XMLReader saxReader = 
 	    XMLReaderFactory.createXMLReader(
               "org.apache.xerces.parsers.SAXParser");
-	saxReader.setContentHandler(new SaxHandler());
+	//saxReader.setContentHandler(new SaxHandler());
+	saxReader.setContentHandler(new StackEval());
 	saxReader.parse(uri);
     }
     

@@ -1,3 +1,4 @@
+import java.util.List;
 import java.util.Stack;
 
 
@@ -7,8 +8,17 @@ public class TPEStack {
 	private	TPEStack spar;
 	
 	// gets the stacks for all descendants of p
-	public Array <TPEStack> getDescendantStacks() {
-		
+	public List<TPEStack> getDescendantStacks() {
+		//TODO add implementation
+		return null;
+	}
+	
+	public PatternNode getPatternNode(){
+		return p;
+	}
+	
+	public TPEStack getTPEStack(){
+		return spar;
 	}
 	
 	public void push(Match m){ 

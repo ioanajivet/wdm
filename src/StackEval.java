@@ -1,3 +1,4 @@
+import java.util.List;
 import java.util.Stack;
 
 import org.xml.sax.*;
@@ -13,13 +14,13 @@ public class StackEval implements ContentHandler{
 		private Stack <Integer> preOfOpenNodes;
 		
 		@Override
-		public void startElement(String uri, String localName, String qName,
-				Attributes attributes) throws SAXException {
+		public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 			// TODO Auto-generated method stub
 			System.out.println("Opening tag : " + localName);
-/*			for(s in rootStack.getDescendantStacks()){
-				if(localName == s.p.name && s.spar.top().status == open){
-					Match m = new Match(currentPre, s.spar.top(), s);
+			List<TPEStack> descendantStacks = rootStack.getDescendantStacks(); 
+			for(TPEStack s : descendantStacks){
+				if(localName == s.getPatternNode().getName() && s.getTPEStack().top().getStatus() == 1){
+					Match m = new Match(currentPre, s.getTPEStack().top(), s);
 					// create a match satisfying the ancestor conditions
 					// of query node s.p
 					s.push(m); preOfOpenNodes.push(currentPre);
@@ -27,7 +28,7 @@ public class StackEval implements ContentHandler{
 				
 				currentPre ++;
 			}
-				
+/*				
 			for (a in attributes.){
 				// similarly look for query nodes possibly matched
 				// by the attributes of the currently started element
