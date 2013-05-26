@@ -4,15 +4,16 @@ import java.util.List;
 import java.util.Map;
 
 
-public class Match {
+public class Match{
 	private int pre;
 	private int state;	//open = 1 or closed = 0
 	private Match parent;
 	private Map <PatternNode, List<Match>> children = new HashMap<PatternNode, List<Match>>();
 	private TPEStack st;
+	private String text;
 	
 	public Match() {
-		
+		this.text = "";
 	}
 	
 	public Match(int currentPre, Match top, TPEStack s) {
@@ -21,6 +22,7 @@ public class Match {
 		this.parent = top;
 		this.state = 1;	//default state is open
 		this.st = s;
+		this.text = "";
 	}
 	public int getStatus() {
 		return state;
@@ -30,14 +32,24 @@ public class Match {
 		return pre;
 	}
 	
+	public String getText(){
+		return text;
+	}
+	
+	public void addText(String text){
+		this.text = text;
+	}
+	
 	public Map<PatternNode, List<Match>> getChildren(){
 		return children;
 	}
 
 	public void close() {
-		// TODO Auto-generated method stub
 		state = 0;
-		
+	}
+	
+	public TPEStack getStack(){
+		return st;
 	}
 	
 	@Override
@@ -51,12 +63,25 @@ public class Match {
 	}
 
 	public void addChildMatch(PatternNode child, Match m) {
-		// TODO Auto-generated method stub
-		if(children.get(child) == null){
-			ArrayList<Match> mat = new ArrayList<Match>();
-			mat.add(m);
-			children.put(child, mat);
-			System.out.println("child added to match");
-		}
+		List<Match> mat = children.get(child);
+		if(mat == null)
+			mat = new ArrayList<Match>();
+		mat.add(m);
+		children.put(child, mat);
+		
 	}
+	
+	public void removeChildMatch(PatternNode child, Match m) {
+		List<Match> mat = children.get(child);
+		int index = mat.indexOf(m);
+		if(index == -1)
+			return;
+		children.get(child).remove(m);
+	}
+
+	public Match getParentMatch() {
+		// TODO Auto-generated method stub
+		return parent;
+	}
+	
 }

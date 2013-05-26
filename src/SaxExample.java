@@ -8,13 +8,17 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 public class SaxExample {
 
-    /** Constructor */
+	//TODO - implement a running example in a more configurable way.
+    
+	/** Constructor */
     public SaxExample(String uri) throws SAXException, IOException {
 	XMLReader saxReader = 
 	    XMLReaderFactory.createXMLReader(
               "org.apache.xerces.parsers.SAXParser");
-	//saxReader.setContentHandler(new SaxHandler());
-	saxReader.setContentHandler(new StackEval());
+	
+	StackEval eval = new StackEval();
+	eval.readTreePattern();
+	saxReader.setContentHandler(eval);
 	saxReader.parse(uri);
     }
     

@@ -1,142 +1,176 @@
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-
 import org.xml.sax.*;
-import org.xml.sax.helpers.LocatorImpl;
 
 public class StackEval implements ContentHandler{
 
-		//private TreePattern q;
-		private PatternNode root;// = new PatternNode("name");
-		private TPEStack rootStack;// = new TPEStack(); // stack for the root of q
-		// pre number of the last element which has started:
-		private int currentPre = 0;
-		// pre numbers for all elements having started but not ended yet:
-		private Stack <Integer> preOfOpenNodes = new Stack<Integer>();
-		
-		private ArrayList<Match> foundMatches = new ArrayList<Match>();
+		private PatternNode root;												// the pattern tree
+		private TPEStack rootStack; 											// stack for the root of the tree
+		private int currentPre = 0;												// counter for the current element in the XML file
+		private Stack <Integer> preOfOpenNodes = new Stack<Integer>();			// stack with the preNumber for all elements opened but not closed yet					
+		private Map<Integer,String> texts = new HashMap<Integer,String>();		// list to collect text 
 		
 		@Override
 		public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-			// TODO Auto-generated method stub
 			System.out.println("Opening tag : " + localName);
+			Match m;
 			List<TPEStack> descendantStacks = rootStack.getDescendantStacks(); 
-			//if (descendantStacks == null)
-				//return;
 			for(TPEStack s : descendantStacks){
-				if(localName == s.getPatternNode().getName() && (s.getTPEStack() == null || s.getTPEStack().top().getStatus() == 1)){
-					Match m;
-					if(s.getTPEStack() == null){
+				if(localName.equals(s.getPatternNode().getName()) && (s.getTPEStack() == null || (s.getTPEStack().top() != null && s.getTPEStack().top().getStatus() == 1))){
+
+					if(s.getTPEStack() == null)
 						m = new Match(currentPre, null, s);
-						System.out.println("null");
-					}
-					else {
+					else 
 						m = new Match(currentPre, s.getTPEStack().top(), s);
-						System.out.println("not null");
-					}
-					// create a match satisfying the ancestor conditions
-					// of query node s.p
+					
+					// create a match satisfying the ancestor conditions of query node s.patternNode
 					s.push(m); 
 					if(s.getTPEStack() != null)
 						s.getTPEStack().addChildMatchToMatch(s.getPatternNode(),m);
-					System.out.println("got here");
 				}
 			}
 			preOfOpenNodes.push(currentPre);
 			currentPre ++;
-/*				
-			for (a in attributes.){
+			
+			for(int i=0; i<attributes.getLength(); i++){
+				String atrName = "@" + attributes.getLocalName(i);
+				String atrValue = attributes.getValue(i);
 				// similarly look for query nodes possibly matched
 				// by the attributes of the currently started element
-				for (s in rootStack.getDescendantStacks()){
-					if (a.name == s.p.name && s.par.top().status == open){
-						Match ma = new Match(currentPre, s.spar.top(), s);
-						s.push(ma);
-					}
+			
+				for (TPEStack s : descendantStacks){
+					if (atrName.equals(s.getPatternNode().getName()) && (s.getTPEStack() == null 
+							|| s.getTPEStack().top().getStatus() == 1)){
+						if(s.getTPEStack() == null)			//this is the root node
+							m = new Match(currentPre, null, s);				
+						else 								//this is a descendant in the tree pattern
+							m = new Match(currentPre, s.getTPEStack().top(), s);
+
+						//m.addText(atrValue);
+						texts.put(currentPre, atrValue);
+						m.close();
+						s.push(m); 
+						if(s.getTPEStack() != null)
+							s.getTPEStack().addChildMatchToMatch(s.getPatternNode(),m);
+						break;
+					}	
 				}
-				
 				currentPre ++;
-			}*/
+			}
 		}
 
 		@Override
-		public void characters(char[] arg0, int arg1, int arg2)
+		public void characters(char[] ch, int start, int length)
 				throws SAXException {
-			// TODO Auto-generated method stub
-			
+			String text = new String(ch, start, length).trim();
+			int lastOpened = preOfOpenNodes.lastElement();
+			if(!text.equals(""))
+				if(texts.containsKey(lastOpened))
+					texts.put(lastOpened, texts.get(lastOpened) + " " + text);
+				else
+					texts.put(lastOpened, text);
 		}
+		
 		@Override
 		public void endDocument() throws SAXException {
-			// TODO Auto-generated method stub
+			// TODO remove tested stuff and call for print tuples.
 			System.out.println("End the parsing of document");
+			System.out.println("Number of patterns found: " + rootStack.getMatches().size());
 			System.out.println("Patterns found: ");
-			
-			List<TPEStack> descendantStacks = rootStack.getDescendantStacks();
-			for(TPEStack s : descendantStacks){
-				if (s.getMatches().size() != 0)
-					for(Match m: s.getMatches())
-						System.out.println(m.getPre());
+			for(Match m: rootStack.getMatches()){
+				System.out.println(m.getPre());
 			}
+			printTuples();
 			
-			System.out.println("Number of matches: " + foundMatches.size());
 		}
+			
+		private void printTuples() {
+			// TODO print the tuples in a proper manner
+			Map<PatternNode, List<Match>> matchChildren;
+			for(Match m: rootStack.getMatches()){
+				System.out.println(m.getStack().getPatternNode().getName() + " --- " + texts.get(m.getPre()));
+				matchChildren = m.getChildren();
+				List<PatternNode> patterns = root.getChildren();
+				for(int i=0; i<patterns.size(); i++){
+					List<Match> childMatches = matchChildren.get(patterns.get(i));
+					for(Match mat: childMatches)
+						System.out.println(mat.getStack().getPatternNode().getName() + " --- " + texts.get(mat.getPre()));
+				}
+			}
+		}
+
 		@Override
-		public void endElement(String uri, String localName, String qName)
-				throws SAXException {
-			// TODO Auto-generated method stub
+		public void endElement(String uri, String localName, String qName) throws SAXException {
 			System.out.println("Closing tag : " + localName);
 			// we need to find out if the element ending now corresponded
 						// to matches in some stacks
+			Match m;
 			List<TPEStack> descendantStacks = rootStack.getDescendantStacks(); 
 						// first, get the pre number of the element that ends now:
 				int preOfLastOpen = preOfOpenNodes.pop();
 						// now look for Match objects having this pre number:
+				
 				for(TPEStack s : descendantStacks){
-					if (localName == s.getPatternNode().getName() && (s.top() == null || s.top().getStatus() == 1)
+					if (localName.equals(s.getPatternNode().getName()) && (s.top() == null || s.top().getStatus() == 1)
 							&& (s.top() == null || s.top().getPre() == preOfLastOpen)){
 						// all descendants of this Match have been traversed by now.
-						Match m = s.pop();
-						foundMatches.add(m);
-						removeChildrenMatches(m);
-						// check if m has child matches for all children
-						// of its pattern node
+						if(s.top() == null)
+							continue;						
+						
+						m = s.top();
+						s.top().close();
+						// check if m has child matches for all children of its pattern node
 						List<PatternNode> children = s.getPatternNode().getChildren(); 
 						
 						for (PatternNode pChild: children){
 						// pChild is a child of the query node for which m was created
 							Map<PatternNode, List<Match>> matchChildren = m.getChildren();
-							if (matchChildren.get(pChild) == null){
-						// m lacks a child Match for the pattern node pChild
-						// we remove m from its Stack, detach it from its parent etc.
-								System.out.println("removed");
+							if (matchChildren.get(pChild) == null || matchChildren.get(pChild).size() == 0){		
+								//if m lacks a child Match for the pattern node pChild
+								// we remove m from its Stack, detach it from its parent etc.
 								s.removeMatch(m);
-								foundMatches.remove(m);
-								removeChildrenMatches(m);
+								if(m.getParentMatch() != null)
+									m.getParentMatch().removeChildMatch(s.getPatternNode(),m);
+								break;
 							}
 						}
-						m.close();
+					break;
 					}
+					
 				}
 			
 		}
+
+		@Override
+		public void startDocument() throws SAXException {
+			System.out.println("Start the parsing of document");
+		}
 		
-		private void removeChildrenMatches(Match m) {
-			// TODO Auto-generated method stub
-			Collection<List<Match>> matchList = m.getChildren().values();
-			Iterator<List<Match>> it = matchList.iterator();
-			while(it.hasNext()){
-				List<Match> list = it.next();
-				for(int i=0;i<list.size();i++)
-					foundMatches.remove(list.get(i));
-			}
-				
-			
+		public void readTreePattern() {
+			//TODO implemented in a proper manner -> read from file or something
+			root = new PatternNode("food");
+			PatternNode name = new PatternNode("name");
+			name.addChild(new PatternNode("number"));
+			root.addChild(name);
+			//root.addChild(new PatternNode("@atr1"));
+			//root.addChild(new PatternNode("@atr2"));
+			initializeStack(root);
 		}
 
+		private void initializeStack(PatternNode root) {
+			if(root == null)
+				return;
+			rootStack = new TPEStack(root,  null);
+			rootStack.populateTPEStacks();
+			
+			System.out.println("--- Initialize complete");
+
+		}
+		
+		
+		//unused methods from the interface ContentHandler
 		@Override
 		public void endPrefixMapping(String arg0) throws SAXException {
 			// TODO Auto-generated method stub
@@ -164,15 +198,6 @@ public class StackEval implements ContentHandler{
 			// TODO Auto-generated method stub
 			
 		}
-		@Override
-		public void startDocument() throws SAXException {
-			// TODO Auto-generated method stub
-			System.out.println("Start the parsing of document");
-			root = new PatternNode("food");
-			root.addChild(new PatternNode("name"));
-			initializeStack(root);
-			
-		}
 
 		@Override
 		public void startPrefixMapping(String arg0, String arg1)
@@ -180,15 +205,5 @@ public class StackEval implements ContentHandler{
 			// TODO Auto-generated method stub
 			
 		}
-		
-		private void initializeStack(PatternNode root) {
-			if(root == null)
-				return;
-			rootStack = new TPEStack(root,  null);
-			rootStack.populateTPEStacks();
-			
-			System.out.println("initialize complete");
-			System.out.println("Desc size: " + rootStack.getDescendantStacks().size());
-			System.out.println("Node name: " + rootStack.getPatternNode().getName());
-		}
+
 }

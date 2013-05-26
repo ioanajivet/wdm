@@ -4,7 +4,7 @@ import java.util.List;
 
 public class PatternNode {
 	private String name;
-	private boolean marked = false;	//is the node is to be returned or not; default false
+	private boolean marked = false;			//if the node is to be part of the resulting tuple; default false
 	private ArrayList<PatternNode> children = new ArrayList<PatternNode>();
 	
 	public PatternNode(String name){

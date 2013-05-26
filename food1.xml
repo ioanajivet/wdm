@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- Edited by XMLSpy® -->
+<breakfast_menu>
+non added text
+	<food>
+		number 1	
+		<name> Waffles 
+		<number>1</number>
+		</name>
+		<price>$5.95</price>
+		<description>two of our famous Belgian Waffles with plenty of real maple syrup</description>
+		<calories>650</calories>
+		number 2
+	</food>
+	<food>
+		<name>
+		<number></number>Strawberry Belgian Waffles</name>
+		<price>
+		<number>1</number>$7.95</price>
+		<description>light Belgian waffles covered with strawberries and whipped cream</description>
+		<calories>900</calories>
+	</food>
+</breakfast_menu>
