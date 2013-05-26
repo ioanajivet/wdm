@@ -2,7 +2,7 @@
 <!-- Edited by XMLSpy® -->
 <breakfast_menu>
 non added text
-	<food>
+	<food atr1="abc">
 		number 1	
 		<name> Waffles 
 		<number>1</number>
@@ -12,7 +12,7 @@ non added text
 		<calories>650</calories>
 		number 2
 	</food>
-	<food>
+	<food atr2="bcd">
 		<name>
 		<number></number>Strawberry Belgian Waffles</name>
 		<price>

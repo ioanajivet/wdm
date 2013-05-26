@@ -16,7 +16,7 @@ public class SaxExample {
 	    XMLReaderFactory.createXMLReader(
               "org.apache.xerces.parsers.SAXParser");
 	
-	StackEval eval = new StackEval();
+	BasicStackEval eval = new BasicStackEval();
 	eval.readTreePattern();
 	saxReader.setContentHandler(eval);
 	saxReader.parse(uri);

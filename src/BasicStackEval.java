@@ -1,16 +1,21 @@
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import org.xml.sax.*;
 
-public class StackEval implements ContentHandler{
+public class BasicStackEval implements ContentHandler{
 
 		private PatternNode root;												// the pattern tree
 		private TPEStack rootStack; 											// stack for the root of the tree
 		private int currentPre = 0;												// counter for the current element in the XML file
 		private Stack <Integer> preOfOpenNodes = new Stack<Integer>();			// stack with the preNumber for all elements opened but not closed yet					
 		private Map<Integer,String> texts = new HashMap<Integer,String>();		// list to collect text 
+		private Printer printer = new Printer();
 		
 		@Override
 		public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
@@ -77,30 +82,15 @@ public class StackEval implements ContentHandler{
 		public void endDocument() throws SAXException {
 			// TODO remove tested stuff and call for print tuples.
 			System.out.println("End the parsing of document");
-			System.out.println("Number of patterns found: " + rootStack.getMatches().size());
-			System.out.println("Patterns found: ");
-			for(Match m: rootStack.getMatches()){
-				System.out.println(m.getPre());
-			}
-			printTuples();
+			System.out.println("\nNumber of patterns found: " + rootStack.getMatches().size());
+			
+			printer.printTuplesNumbersInFile(root, rootStack, texts);
+			printer.printTuplesTextInFile(root, rootStack, texts);
 			
 		}
 			
-		private void printTuples() {
-			// TODO print the tuples in a proper manner
-			Map<PatternNode, List<Match>> matchChildren;
-			for(Match m: rootStack.getMatches()){
-				System.out.println(m.getStack().getPatternNode().getName() + " --- " + texts.get(m.getPre()));
-				matchChildren = m.getChildren();
-				List<PatternNode> patterns = root.getChildren();
-				for(int i=0; i<patterns.size(); i++){
-					List<Match> childMatches = matchChildren.get(patterns.get(i));
-					for(Match mat: childMatches)
-						System.out.println(mat.getStack().getPatternNode().getName() + " --- " + texts.get(mat.getPre()));
-				}
-			}
-		}
-
+		
+		
 		@Override
 		public void endElement(String uri, String localName, String qName) throws SAXException {
 			System.out.println("Closing tag : " + localName);
@@ -151,11 +141,16 @@ public class StackEval implements ContentHandler{
 		public void readTreePattern() {
 			//TODO implemented in a proper manner -> read from file or something
 			root = new PatternNode("food");
+			root.mark();
 			PatternNode name = new PatternNode("name");
+			name.mark();
 			name.addChild(new PatternNode("number"));
 			root.addChild(name);
-			//root.addChild(new PatternNode("@atr1"));
-			//root.addChild(new PatternNode("@atr2"));
+			root.addChild(new PatternNode("@atr1"));
+			PatternNode atr2 = new PatternNode("@atr2");
+			atr2.mark();
+			root.addChild(atr2);
+			
 			initializeStack(root);
 		}
 

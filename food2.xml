@@ -40,6 +40,7 @@ non added text
 		<food atr1="jhjh" atr2="sakjfh">
 		number 1	
 		<name> Waffles 
+		<number> number2</number>
 		<food atr1="lll">
 		<name>French Toastklj</name>
 		<price>$4.50</price>

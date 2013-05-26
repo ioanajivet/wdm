@@ -39,6 +39,9 @@ public class PatternNode {
 		return false;
 	}
 	
+	public void mark(){
+		marked = true;
+	}
 	@Override
 	public boolean equals(Object o){
 		if (o instanceof PatternNode)
