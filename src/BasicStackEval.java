@@ -12,7 +12,7 @@ public class BasicStackEval implements ContentHandler{
 
 		private PatternNode root;												// the pattern tree
 		private TPEStack rootStack; 											// stack for the root of the tree
-		private int currentPre = 0;												// counter for the current element in the XML file
+		private int currentPre = 1;												// counter for the current element in the XML file
 		private Stack <Integer> preOfOpenNodes = new Stack<Integer>();			// stack with the preNumber for all elements opened but not closed yet					
 		private Map<Integer,String> texts = new HashMap<Integer,String>();		// list to collect text 
 		private Printer printer = new Printer();
@@ -83,10 +83,15 @@ public class BasicStackEval implements ContentHandler{
 		public void endDocument() throws SAXException {
 			// TODO remove tested stuff and call for print tuples.
 			System.out.println("End the parsing of document");
-			System.out.println("\nNumber of patterns found: " + rootStack.getMatches().size());
 			
-			printer.printTuplesNumbersInFile(root, rootStack, texts);
-			printer.printTuplesTextInFile(root, rootStack, texts);
+			//printer.printTuplesNumbersInFile(root, rootStack, texts);
+			//printer.printTuplesTextInFile(root, rootStack, texts);
+			
+			System.out.println("Results: ");
+			List<String> results = printer.printTuples("", rootStack.getMatches().peek());
+			for(String s: results)
+				System.out.println(s);
+			System.out.println("\nNumber of patterns found: " + results.size());
 			
 		}
 			
@@ -155,7 +160,6 @@ public class BasicStackEval implements ContentHandler{
 			person.addChild(email);
 			person.addChild(name);
 			root.addChild(person);
-			
 	
 			initializeStack(root);
 		}
@@ -208,3 +212,4 @@ public class BasicStackEval implements ContentHandler{
 		}
 
 }
+

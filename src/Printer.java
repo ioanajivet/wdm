@@ -3,8 +3,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 public class Printer {
@@ -29,6 +32,43 @@ public class Printer {
 			System.out.println();
 		}
 		
+	}
+	
+	public List<String> printTuples(String previousMatches, Match current){
+		String currentText = current.getPre() + " ";
+		List<String> childStrings = new ArrayList<String>();
+		List<String> finalStrings = new ArrayList<String>();
+		
+		//initialize the list that will be returned with the value of the current match
+		childStrings.add(currentText);	
+		
+		//get the child matches of the current Match, extract the PatternNodes 
+				//and order them so they are printed according to the header = assure that the Iterator doesn't go random
+		Map<PatternNode, List<Match>> matchChildren = current.getChildren();		
+		List<PatternNode> reorderedPatternKeySet = reorder(matchChildren.keySet());
+		
+		for(PatternNode childPattern: reorderedPatternKeySet){
+			List<Match> patternChildren = matchChildren.get(childPattern);
+			for(Match m : patternChildren){
+				List<String> currentChildStrings = printTuples(currentText, m);
+				for(String s: currentChildStrings){
+					for(String parent: childStrings)
+						finalStrings.add(parent + s);
+				}
+			}
+			childStrings.clear();
+			childStrings.addAll(finalStrings);
+			finalStrings.clear();
+		}
+
+		return childStrings;
+	}
+
+	private List<PatternNode> reorder(Set<PatternNode> keySet) {
+		// TODO reorder them according to the header - the header must be added here too
+		List<PatternNode> listOfNodes = new ArrayList<PatternNode>();
+		listOfNodes.addAll(keySet);
+		return listOfNodes;
 	}
 
 	public void printTuplesText(PatternNode root, TPEStack rootStack, Map<Integer,String> texts) {
