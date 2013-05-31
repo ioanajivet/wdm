@@ -80,8 +80,11 @@ public class Match{
 	}
 
 	public Match getParentMatch() {
-		// TODO Auto-generated method stub
 		return parent;
+	}
+	
+	public PatternNode getPatternNode(){
+		return st.getPatternNode();
 	}
 	
 }

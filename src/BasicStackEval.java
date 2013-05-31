@@ -2,6 +2,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,13 +87,9 @@ public class BasicStackEval implements ContentHandler{
 			
 			//printer.printTuplesNumbersInFile(root, rootStack, texts);
 			//printer.printTuplesTextInFile(root, rootStack, texts);
-			
-			System.out.println("Results: ");
-			List<String> results = printer.printTuples("", rootStack.getMatches().peek());
-			for(String s: results)
-				System.out.println(s);
-			System.out.println("\nNumber of patterns found: " + results.size());
-			
+
+			printer.printFullTuplesNumbers(rootStack);
+			printer.printMarkedTuplesNumbers(rootStack);
 		}
 			
 		
@@ -160,7 +157,7 @@ public class BasicStackEval implements ContentHandler{
 			person.addChild(email);
 			person.addChild(name);
 			root.addChild(person);
-	
+			
 			initializeStack(root);
 		}
 

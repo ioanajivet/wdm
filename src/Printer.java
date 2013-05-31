@@ -12,29 +12,7 @@ import java.util.Set;
 
 public class Printer {
 	
-	public void printTuplesNumbers(PatternNode root, TPEStack rootStack, Map<Integer,String> texts) {
-		// TODO clean-up
-		Map<PatternNode, List<Match>> matchChildren;
-		
-		System.out.println(printHeader(root));
-		
-		for(Match m: rootStack.getMatches()){
-			if(m.getStack().getPatternNode().isMarked())
-				System.out.print(m.getPre() + "\t\t");
-			matchChildren = m.getChildren();
-			List<PatternNode> patterns = root.getChildren();
-			for(int i=0; i<patterns.size(); i++){
-				List<Match> childMatches = matchChildren.get(patterns.get(i));
-				for(Match mat: childMatches)
-					if(mat.getStack().getPatternNode().isMarked())
-						System.out.print(mat.getPre() + "\t\t");
-			}
-			System.out.println();
-		}
-		
-	}
-	
-	public List<String> printTuples(String previousMatches, Match current){
+	private List<String> printFullTuples(Match current){
 		String currentText = current.getPre() + " ";
 		List<String> childStrings = new ArrayList<String>();
 		List<String> finalStrings = new ArrayList<String>();
@@ -42,15 +20,13 @@ public class Printer {
 		//initialize the list that will be returned with the value of the current match
 		childStrings.add(currentText);	
 		
-		//get the child matches of the current Match, extract the PatternNodes 
-				//and order them so they are printed according to the header = assure that the Iterator doesn't go random
-		Map<PatternNode, List<Match>> matchChildren = current.getChildren();		
-		List<PatternNode> reorderedPatternKeySet = reorder(matchChildren.keySet());
+		Map<PatternNode, List<Match>> matchChildren = current.getChildren();			//children matches of the current match		
+		List<PatternNode> childPatternNodes = current.getPatternNode().getChildren();	//children nodes of the node of the match
 		
-		for(PatternNode childPattern: reorderedPatternKeySet){
+		for(PatternNode childPattern: childPatternNodes){
 			List<Match> patternChildren = matchChildren.get(childPattern);
 			for(Match m : patternChildren){
-				List<String> currentChildStrings = printTuples(currentText, m);
+				List<String> currentChildStrings = printFullTuples(m);
 				for(String s: currentChildStrings){
 					for(String parent: childStrings)
 						finalStrings.add(parent + s);
@@ -64,30 +40,67 @@ public class Printer {
 		return childStrings;
 	}
 
-	private List<PatternNode> reorder(Set<PatternNode> keySet) {
-		// TODO reorder them according to the header - the header must be added here too
-		List<PatternNode> listOfNodes = new ArrayList<PatternNode>();
-		listOfNodes.addAll(keySet);
-		return listOfNodes;
-	}
-
-	public void printTuplesText(PatternNode root, TPEStack rootStack, Map<Integer,String> texts) {
-		Map<PatternNode, List<Match>> matchChildren;
-		System.out.println(printHeader(root));
+	private List<String> printMarkedTuples(Match current){
+		String currentText = "";
+		if(current.getPatternNode().isMarked())
+			currentText = current.getPre() + " ";
 		
-		for(Match m: rootStack.getMatches()){
-			if(m.getStack().getPatternNode().isMarked())
-				System.out.print(texts.get(m.getPre()) + "\t\t");
-			matchChildren = m.getChildren();
-			List<PatternNode> patterns = root.getChildren();
-			for(int i=0; i<patterns.size(); i++){
-				List<Match> childMatches = matchChildren.get(patterns.get(i));
-				for(Match mat: childMatches)
-					if(mat.getStack().getPatternNode().isMarked())
-						System.out.print(texts.get(mat.getPre()) + "\t\t");
+		List<String> childStrings = new ArrayList<String>();
+		List<String> finalStrings = new ArrayList<String>();
+		
+		//initialize the list that will be returned with the value of the current match
+		childStrings.add(currentText);	
+		
+		Map<PatternNode, List<Match>> matchChildren = current.getChildren();			//children matches of the current match		
+		List<PatternNode> childPatternNodes = current.getPatternNode().getChildren();	//children nodes of the node of the match
+		
+		for(PatternNode childPattern: childPatternNodes){
+			List<Match> patternChildren = matchChildren.get(childPattern);
+			for(Match m : patternChildren){
+				List<String> currentChildStrings = printMarkedTuples(m);
+					for(String s: currentChildStrings){
+						for(String parent: childStrings)
+							finalStrings.add(parent + s);
+					}
 			}
-			System.out.println();
+			childStrings.clear();
+			childStrings.addAll(finalStrings);
+			finalStrings.clear();
 		}
+
+		return childStrings;
+	}
+	
+	public void printFullTuplesNumbers(TPEStack rootStack) {
+		List<String> results = new ArrayList<String>();
+		
+		System.out.println("\nFull resulting tuples: ");
+		System.out.println(printFullHeader(rootStack.getPatternNode()));
+		
+		for(Match match: rootStack.getMatches()) 
+			results.addAll(printFullTuples(match));
+		
+		for(String s: results)
+			System.out.println(s);
+		
+	}
+	
+	public void printMarkedTuplesNumbers(TPEStack rootStack) {
+		List<String> results = new ArrayList<String>();
+
+		System.out.println("\nMarked resulting tuples: ");
+		System.out.println(printHeader(rootStack.getPatternNode()));
+		
+		for(Match match: rootStack.getMatches())
+			results.addAll(printMarkedTuples(match));
+		
+		for(String s: results)
+			System.out.println(s);
+		
+		if (results.size() > 0)
+			System.out.println("\nNumber of patterns found: " + results.size());
+		else
+			System.out.println("\nNo matching patterns found.");
 	}
 	
 	public void printTuplesTextInFile(PatternNode root, TPEStack rootStack, Map<Integer,String> texts) {
@@ -167,9 +180,16 @@ public class Printer {
 	private String printHeader(PatternNode node){
 		String header = "";
 		if(node.isMarked())
-			header += node.getName() + "\t\t";
+			header += node.getName() + "\t";
 		for(PatternNode child: node.getChildren())
 			header += printHeader(child);
+		return header;
+	}
+	
+	private String printFullHeader(PatternNode node){
+		String header = node.getName() + "\t";
+		for(PatternNode child: node.getChildren())
+			header += printFullHeader(child);
 		return header;
 	}
 }
