@@ -23,7 +23,8 @@ public class BasicStackEval implements ContentHandler{
 			Match m;
 			List<TPEStack> descendantStacks = rootStack.getDescendantStacks(); 
 			for(TPEStack s : descendantStacks){
-				if(localName.equals(s.getPatternNode().getName()) && (s.getTPEStack() == null || (s.getTPEStack().top() != null && s.getTPEStack().top().getStatus() == 1))){
+				if(localName.equals(s.getPatternNode().getName())
+						&& (s.getTPEStack() == null || (s.getTPEStack().top() != null && s.getTPEStack().top().getStatus() == 1))){
 
 					if(s.getTPEStack() == null)
 						m = new Match(currentPre, null, s);
@@ -103,7 +104,8 @@ public class BasicStackEval implements ContentHandler{
 						// now look for Match objects having this pre number:
 				
 				for(TPEStack s : descendantStacks){
-					if (localName.equals(s.getPatternNode().getName()) && (s.top() == null || s.top().getStatus() == 1)
+					if (localName.equals(s.getPatternNode().getName())
+						&& (s.top() == null || s.top().getStatus() == 1)
 							&& (s.top() == null || s.top().getPre() == preOfLastOpen)){
 						// all descendants of this Match have been traversed by now.
 						if(s.top() == null)
@@ -140,17 +142,21 @@ public class BasicStackEval implements ContentHandler{
 		
 		public void readTreePattern() {
 			//TODO implemented in a proper manner -> read from file or something
-			root = new PatternNode("food");
-			root.mark();
+			root = new PatternNode("people");
+			PatternNode person = new PatternNode("person");
 			PatternNode name = new PatternNode("name");
-			name.mark();
-			name.addChild(new PatternNode("number"));
-			root.addChild(name);
-			root.addChild(new PatternNode("@atr1"));
-			PatternNode atr2 = new PatternNode("@atr2");
-			atr2.mark();
-			root.addChild(atr2);
+			PatternNode first = new PatternNode("first");
+			PatternNode last = new PatternNode("last");
+			name.addChild(first);
+			name.addChild(last);
+			last.mark();
+			PatternNode email = new PatternNode("email");
+			email.mark();
+			person.addChild(email);
+			person.addChild(name);
+			root.addChild(person);
 			
+	
 			initializeStack(root);
 		}
 
