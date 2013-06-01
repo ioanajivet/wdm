@@ -36,6 +36,7 @@ public class BasicStackEval implements ContentHandler{
 					s.push(m); 
 					if(s.getTPEStack() != null)
 						s.getTPEStack().addChildMatchToMatch(s.getPatternNode(),m);
+					break;
 				}
 			}
 			preOfOpenNodes.push(currentPre);
@@ -118,13 +119,21 @@ public class BasicStackEval implements ContentHandler{
 						// check if m has child matches for all children of its pattern node
 						List<PatternNode> children = s.getPatternNode().getChildren(); 
 						
+						//check for value predicate
+						String valuePredicate = m.getPatternNode().getText();
+						if(valuePredicate != null && !valuePredicate.equals(texts.get(m.getPre()))){
+							s.removeMatch(m);
+							if(m.getParentMatch() != null)
+								m.getParentMatch().removeChildMatch(s.getPatternNode(),m);
+							break;
+						}
+							
+						//if the current match doesn't have all the required children matches
 						for (PatternNode pChild: children){
 						// pChild is a child of the query node for which m was created
 							Map<PatternNode, List<Match>> matchChildren = m.getChildren();
 							if (!pChild.isOptional() &&
 									(matchChildren.get(pChild) == null || matchChildren.get(pChild).size() == 0)){		
-								//if m lacks a child Match for the pattern node pChild
-								// we remove m from its Stack, detach it from its parent etc.
 								s.removeMatch(m);
 								if(m.getParentMatch() != null)
 									m.getParentMatch().removeChildMatch(s.getPatternNode(),m);

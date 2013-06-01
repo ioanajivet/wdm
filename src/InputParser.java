@@ -47,7 +47,10 @@ public class InputParser implements ContentHandler{
 			String text = new String(ch, start, length).trim();
 			if (!text.equals("")){
 				PatternNode topNode = treeStack.peek();
-				topNode.setText(text);
+				if(topNode.getText() == null)
+					topNode.setText(text);
+				else
+					topNode.setText(topNode.getText() + " " + text);
 			}
 		}
 		
