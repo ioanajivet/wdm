@@ -6,6 +6,7 @@ public class PatternNode {
 	private String name;
 	private boolean marked = false;			//if the node is to be part of the resulting tuple; default false
 	private ArrayList<PatternNode> children = new ArrayList<PatternNode>();
+	private boolean optional = false;		//if the node is optional; default false
 	
 	public PatternNode(String name){
 		this.name = name;
@@ -42,6 +43,15 @@ public class PatternNode {
 	public void mark(){
 		marked = true;
 	}
+
+	public void optional(){
+		optional = true;
+	}
+	
+	public boolean isOptional() {
+		return optional;
+	}
+	
 	@Override
 	public boolean equals(Object o){
 		if (o instanceof PatternNode)
@@ -50,4 +60,5 @@ public class PatternNode {
 			return true;
 		return false;
 	}
+
 }

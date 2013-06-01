@@ -121,7 +121,8 @@ public class BasicStackEval implements ContentHandler{
 						for (PatternNode pChild: children){
 						// pChild is a child of the query node for which m was created
 							Map<PatternNode, List<Match>> matchChildren = m.getChildren();
-							if (matchChildren.get(pChild) == null || matchChildren.get(pChild).size() == 0){		
+							if (!pChild.isOptional() &&
+									(matchChildren.get(pChild) == null || matchChildren.get(pChild).size() == 0)){		
 								//if m lacks a child Match for the pattern node pChild
 								// we remove m from its Stack, detach it from its parent etc.
 								s.removeMatch(m);
@@ -152,8 +153,11 @@ public class BasicStackEval implements ContentHandler{
 			name.addChild(first);
 			name.addChild(last);
 			last.mark();
+			name.mark();
 			PatternNode email = new PatternNode("email");
 			email.mark();
+			email.optional();
+			name.optional();
 			person.addChild(email);
 			person.addChild(name);
 			root.addChild(person);

@@ -13,7 +13,7 @@ import java.util.Set;
 public class Printer {
 	
 	private List<String> printFullTuples(Match current){
-		String currentText = current.getPre() + " ";
+		String currentText = current.getPre() + "\t";
 		List<String> childStrings = new ArrayList<String>();
 		List<String> finalStrings = new ArrayList<String>();
 		
@@ -25,12 +25,18 @@ public class Printer {
 		
 		for(PatternNode childPattern: childPatternNodes){
 			List<Match> patternChildren = matchChildren.get(childPattern);
-			for(Match m : patternChildren){
-				List<String> currentChildStrings = printFullTuples(m);
-				for(String s: currentChildStrings){
-					for(String parent: childStrings)
-						finalStrings.add(parent + s);
+			if(patternChildren != null)
+				for(Match m : patternChildren){
+					List<String> currentChildStrings = printFullTuples(m);
+					for(String s: currentChildStrings){
+						for(String parent: childStrings)
+							finalStrings.add(parent + s);
+					}
 				}
+			else {
+				String nulls = generateNullChildren(childPattern);
+				for(String parent: childStrings)
+					finalStrings.add(parent + nulls);
 			}
 			childStrings.clear();
 			childStrings.addAll(finalStrings);
@@ -43,8 +49,7 @@ public class Printer {
 	private List<String> printMarkedTuples(Match current){
 		String currentText = "";
 		if(current.getPatternNode().isMarked())
-			currentText = current.getPre() + " ";
-		
+			currentText = current.getPre() + "\t";
 		List<String> childStrings = new ArrayList<String>();
 		List<String> finalStrings = new ArrayList<String>();
 		
@@ -56,13 +61,20 @@ public class Printer {
 		
 		for(PatternNode childPattern: childPatternNodes){
 			List<Match> patternChildren = matchChildren.get(childPattern);
-			for(Match m : patternChildren){
-				List<String> currentChildStrings = printMarkedTuples(m);
-					for(String s: currentChildStrings){
-						for(String parent: childStrings)
-							finalStrings.add(parent + s);
-					}
+			if(patternChildren != null)
+				for(Match m : patternChildren){
+					List<String> currentChildStrings = printMarkedTuples(m);
+						for(String s: currentChildStrings){
+							for(String parent: childStrings)
+								finalStrings.add(parent + s);
+						}
+				}
+			else {
+				String nulls = generateMarkedNullChildren(childPattern);
+				for(String parent: childStrings)
+					finalStrings.add(parent + nulls);
 			}
+			
 			childStrings.clear();
 			childStrings.addAll(finalStrings);
 			finalStrings.clear();
@@ -101,6 +113,24 @@ public class Printer {
 			System.out.println("\nNumber of patterns found: " + results.size());
 		else
 			System.out.println("\nNo matching patterns found.");
+	}
+	
+	private String generateNullChildren(PatternNode node) {
+		String nulls = "null\t";
+		for(PatternNode child: node.getChildren())
+			nulls += generateNullChildren(child);
+		return nulls;
+	}
+
+	private String generateMarkedNullChildren(PatternNode node){
+		String nulls;
+		if(node.isMarked())
+			nulls = "null\t";
+		else
+			nulls = "";
+		for(PatternNode child: node.getChildren())
+			nulls += generateMarkedNullChildren(child);
+		return nulls;
 	}
 	
 	public void printTuplesTextInFile(PatternNode root, TPEStack rootStack, Map<Integer,String> texts) {
