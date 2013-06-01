@@ -12,7 +12,7 @@ import org.xml.sax.*;
 public class BasicStackEval implements ContentHandler{
 
 		private PatternNode root;												// the pattern tree
-		private TPEStack rootStack; 											// stack for the root of the tree
+		private static TPEStack rootStack; 											// stack for the root of the tree
 		private int currentPre = 1;												// counter for the current element in the XML file
 		private Stack <Integer> preOfOpenNodes = new Stack<Integer>();			// stack with the preNumber for all elements opened but not closed yet					
 		private Map<Integer,String> texts = new HashMap<Integer,String>();		// list to collect text 

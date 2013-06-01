@@ -30,7 +30,7 @@ public class SaxExample {
     }
     
     public static void main(String[] args) {
-	if (0 == args.length || 1 < args.length) {
+	if (0 == args.length || 2 < args.length) {
 	    System.out.println("Usage : SaxExample uri ");
 	    System.exit(1);
 	}
