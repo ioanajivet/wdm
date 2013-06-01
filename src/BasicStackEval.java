@@ -16,7 +16,7 @@ public class BasicStackEval implements ContentHandler{
 		private int currentPre = 1;												// counter for the current element in the XML file
 		private Stack <Integer> preOfOpenNodes = new Stack<Integer>();			// stack with the preNumber for all elements opened but not closed yet					
 		private Map<Integer,String> texts = new HashMap<Integer,String>();		// list to collect text 
-		private Printer printer = new Printer();
+		private Printer printer = new Printer(texts);
 		
 		@Override
 		public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
@@ -89,8 +89,9 @@ public class BasicStackEval implements ContentHandler{
 			//printer.printTuplesNumbersInFile(root, rootStack, texts);
 			//printer.printTuplesTextInFile(root, rootStack, texts);
 
-			printer.printFullTuplesNumbers(rootStack);
-			printer.printMarkedTuplesNumbers(rootStack);
+			printer.printFullTuplesNumbers(rootStack, System.out);
+			printer.printMarkedTuplesNumbers(rootStack, System.out);
+			printer.printMarkedSubtrees(rootStack, System.out);
 		}
 			
 		
