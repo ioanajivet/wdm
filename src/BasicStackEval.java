@@ -142,26 +142,26 @@ public class BasicStackEval implements ContentHandler{
 			System.out.println("Start the parsing of document");
 		}
 		
-		public void readTreePattern() {
-			//TODO implemented in a proper manner -> read from file or something
-			root = new PatternNode("people");
-			PatternNode person = new PatternNode("person");
-			PatternNode name = new PatternNode("name");
-			PatternNode first = new PatternNode("first");
-			PatternNode last = new PatternNode("last");
-			name.addChild(first);
-			name.addChild(last);
-			last.mark();
-			PatternNode email = new PatternNode("email");
-			email.mark();
-			person.addChild(email);
-			person.addChild(name);
-			root.addChild(person);
-			
-			initializeStack(root);
-		}
+//		public void readTreePattern() {
+//			//TODO implemented in a proper manner -> read from file or something
+//			root = new PatternNode("people");
+//			PatternNode person = new PatternNode("person");
+//			PatternNode name = new PatternNode("name");
+//			PatternNode first = new PatternNode("first");
+//			PatternNode last = new PatternNode("last");
+//			name.addChild(first);
+//			name.addChild(last);
+//			last.mark();
+//			PatternNode email = new PatternNode("email");
+//			email.mark();
+//			person.addChild(email);
+//			person.addChild(name);
+//			root.addChild(person);
+//			
+//			initializeStack(root);
+//		}
 
-		private void initializeStack(PatternNode root) {
+		public void initializeStack(PatternNode root) {
 			if(root == null)
 				return;
 			rootStack = new TPEStack(root,  null);

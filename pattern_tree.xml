@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<person>
+<email marked="true" optional="true" wc="*">
+m@work
+</email>
+<name wc="*">
+<last marked="true">
+</last>
+</name>
+</person>
