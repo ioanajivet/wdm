@@ -73,7 +73,7 @@ Each Match objects contains a reference to its parent Match, the one is linked t
 into the relation between the nested XML nodes in the analyzed XML file. 
 \subsubsection{\textbf{TP algorithm}}
  The algorithm is implemented in the StackEval class. By using the SAX parser, the class implements the ContentHandler interface. 
- The parsing of the XML file is done by implementing the startElement(...) and endElement(…) methods. The nodes in the XML file are 
+ The parsing of the XML file is done by implementing the startElement(\ldots) and endElement(\ldots) methods. The nodes in the XML file are 
  numbered. The opened tags are monitored through a stack which contains the number of the opened XML element. All the TPEStack are held 
  in a list. They will be used during the execution.
  \begin{itemize}
@@ -90,18 +90,17 @@ At the end of the execution, the matches are found in the TPEStack object corres
 \subsection{Implementation of an algorithm that computes the result tuples of C-TP tree patterns}
 \subsubsection{\textbf{Tuples extraction algorithm}}
 To compute the resulting tuples, the TPEStack associated with the root node of the tree-pattern is traversed. 
-For each match in the stack, the tree that results when adding the children matches and their descendants is traversed depth-first 
+For each match in the stack, the tree that results when adding the children matches and their descendants are traversed depth-first 
 recursively to obtain the numbers assigned to the matching nodes. In Printer.java, two collection methods are implemented: one for all 
 the matching nodes in the tree-pattern, and one only for the marked nodes.
 \subsection{Extension to include wildcard ``*'' node}
-The wildcard node in the tree-pattern can be substituted for any node in the XML file. Both startElement(…) and endElement(…) methods 
+The wildcard node in the tree-pattern can be substituted for any node in the XML file. Both startElement(\ldots) and endElement(\ldots) methods 
 are modified. When opening/closing an XML tag, the list of TPEStacks is searched not only for TPEStacks of the nodes whose name equals 
-the name of the tag, but also for a TPEStack that is linked to a node named “wildcard”. This reasoning was explained in the Input paragraph
- of this section.
+the name of the tag, but also for a TPEStack that is linked to a node named “wildcard”. This reasoning was explained in the \emph{Basic Setup} section.
 \subsection{Extension to include optional nodes}
 The optional nodes are denoted by an attribute “optional” in the XML file of the tree-pattern and a field in the PatternNode object. 
-The feature is dealt with in the endElement(…) method of the evaluation algorithm. Only the non-optional children of the match are checked. 
-The optional child matches are ignored, since it doesn’t matter  if they exist or not.
+The feature is dealt with in the endElement(\ldots) method of the evaluation algorithm. Only the non-optional children of the match 
+are checked. The optional child matches are ignored, since it doesn’t matter  if they exist or not.
 \subsection{support for predicate values}
 To implement this extension, during the SAX parsing of the document, the text between element tags is stored in a HashMap.
  The keys of the map are the numbers associated with each tag. Storing and retrieving the text is easy. The text is collected by 
