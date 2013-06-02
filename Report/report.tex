@@ -29,6 +29,25 @@ Nidhi Singh (4242246)}
 \maketitle
 
 \section{Basic Setup}
-\section{Exercises}
 
+For this exercise, we have used two SAX parsers, one which parses the input tree pattern and the other which parses the main XML document
+to look for the input tree pattern and find matches. We decided to take the input as an XML file since it is easier to parse and gives an oppotunity 
+to use SAX again.
+
+The input tree pattern should contain the tree pattern nodes as tags, attributes should be assigned to show if a node is \emph{marked}, or has an 
+\emph{optional} edge between its parent.
+\begin{itemize}
+  \item \textbf{marked}: takes boolean value \emph{true/false}, default: false
+  \item \textbf{optional}: takes boolean value \emph{true/false}, default: false
+\end{itemize}
+The text within each tag is treated similar to the predicate values in \emph{where} clause of a query. Matched objects are created based on this condition.
+
+We have included sample input XML file indicating how the tree pattern XML file should look. 
+\section{Exercises}
+\subsection{Implementation of an evaluation algorithm for C-TP tree-patterns}
+\subsection{Implementation of an algorithm that computes the result tuples of C-TP tree patterns}
+\subsection{Extension to include wildcard ``*'' node}
+\subsection{Extension to include optional nodes}
+\subsection{support for predicate values}
+\subsection{Eextension to return subtrees and not only preorder numbers}
 \end{document}
