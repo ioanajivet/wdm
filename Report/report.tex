@@ -35,11 +35,10 @@ to look for the input tree pattern and find matches. We decided to take the inpu
 to use SAX again.
 
 The input tree pattern should contain the tree pattern nodes as tags, attributes should be assigned to show if a node is \emph{marked}, or has an 
-\emph{optional} edge between its parent or is a \emph{wildcard(wc)} node.
+\emph{optional} edge between its parent.
 \begin{itemize}
   \item \textbf{marked}: takes boolean value \emph{true/false}, default: false
   \item \textbf{optional}: takes boolean value \emph{true/false}, default: false
-  \item \textbf{wc}: takes string value \emph{``*''}
 \end{itemize}
 The text within each tag is treated similar to the predicate values in \emph{where} clause of a query. Matched objects are created based on this condition.
 
