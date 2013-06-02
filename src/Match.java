@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class Match{
 	private int pre;
-	private int state;	//open = 1 or closed = 0
+	private int state;	//open = 1 or closed = 0; default is open
 	private Match parent;
 	private Map <PatternNode, List<Match>> children = new HashMap<PatternNode, List<Match>>();
 	private TPEStack st;
@@ -17,10 +17,9 @@ public class Match{
 	}
 	
 	public Match(int currentPre, Match top, TPEStack s) {
-		// TODO Auto-generated constructor stub
 		this.pre = currentPre;
 		this.parent = top;
-		this.state = 1;	//default state is open
+		this.state = 1;	
 		this.st = s;
 		this.text = "";
 	}
