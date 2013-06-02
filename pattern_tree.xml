@@ -4,9 +4,9 @@
 <email optional ="true" marked="true" wc="*">
 m@home
 </email>
-<name wc="*">
+<wildcard>
 <last marked="true">
 </last>
-</name>
+</wildcard>
 </person>
 </people>

@@ -6,15 +6,15 @@ public class PatternNode {
 	private String name;
 	private String text;
 	private boolean marked = false;			//if the node is to be part of the resulting tuple; default false
-	private boolean optional = false;		// If there is an optional edge between this node and its parent(default:false)
-	private String wildcard = null;
+	private boolean optional = false;		//if there is an optional edge between this node and its parent(default:false)
+	private boolean wildcard = false;		//if the node is a wildcard; default false
 	private ArrayList<PatternNode> children = new ArrayList<PatternNode>();
 	
 	public PatternNode(String name){
 		this.name = name;
 	}
 	
-	public PatternNode(String name, boolean marked, boolean optional, String wildcard){
+	public PatternNode(String name, boolean marked, boolean optional, boolean wildcard){
 		this.name = name;
 		this.marked = marked;
 		this.setOptional(optional);
@@ -73,11 +73,11 @@ public class PatternNode {
 		this.optional = optional;
 	}
 
-	public String getWildcard() {
+	public boolean getWildcard() {
 		return wildcard;
 	}
 
-	public void setWildcard(String wildcard) {
+	public void setWildcard(boolean wildcard) {
 		this.wildcard = wildcard;
 	}
 

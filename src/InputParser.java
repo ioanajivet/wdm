@@ -22,7 +22,7 @@ public class InputParser implements ContentHandler{
 			System.out.println("Opening tag : " + localName);
 			boolean marked = false;
 			boolean optional = false;
-			String wildcard = null;
+			//String wildcard = null;
 			
 			for(int i=0; i<attributes.getLength(); i++){
 				String atrName = "@" + attributes.getLocalName(i);
@@ -33,11 +33,14 @@ public class InputParser implements ContentHandler{
 				if (atrName.equals("@optional") && (atrValue.equals("true") || atrValue.equals("t"))){
 					optional = true;
 				}
-				if (atrName.equals("@wc")){
-					wildcard = atrValue;
-				}
+	
 			}
-			PatternNode node = new PatternNode(localName, marked, optional, wildcard);
+			
+			PatternNode node;
+			if(localName.equals("*"))
+				node = new PatternNode(localName, marked, optional, true);
+			else
+				node = new PatternNode(localName, marked, optional, false);
 			treeStack.add(node);		// Add node to the pattern tree stack
 		}
 

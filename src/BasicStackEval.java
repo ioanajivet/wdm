@@ -1,8 +1,3 @@
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,8 +6,8 @@ import org.xml.sax.*;
 
 public class BasicStackEval implements ContentHandler{
 
-		private PatternNode root;												// the pattern tree
-		private static TPEStack rootStack; 											// stack for the root of the tree
+		//private PatternNode root;												// the pattern tree
+		private static TPEStack rootStack; 										// stack for the root of the tree
 		private int currentPre = 1;												// counter for the current element in the XML file
 		private Stack <Integer> preOfOpenNodes = new Stack<Integer>();			// stack with the preNumber for all elements opened but not closed yet					
 		private Map<Integer,String> texts = new HashMap<Integer,String>();		// list to collect text 
@@ -24,7 +19,7 @@ public class BasicStackEval implements ContentHandler{
 			Match m;
 			List<TPEStack> descendantStacks = rootStack.getDescendantStacks(); 
 			for(TPEStack s : descendantStacks){
-				if(localName.equals(s.getPatternNode().getName())
+				if((localName.equals(s.getPatternNodeName()) || s.getPatternNodeName().equals("wildcard"))
 						&& (s.getTPEStack() == null || (s.getTPEStack().top() != null && s.getTPEStack().top().getStatus() == 1))){
 
 					if(s.getTPEStack() == null)
@@ -108,7 +103,7 @@ public class BasicStackEval implements ContentHandler{
 						// now look for Match objects having this pre number:
 				
 				for(TPEStack s : descendantStacks){
-					if (localName.equals(s.getPatternNode().getName())
+					if ((localName.equals(s.getPatternNode().getName()) || s.getPatternNodeName().equals("wildcard"))
 						&& (s.top() == null || s.top().getStatus() == 1)
 							&& (s.top() == null || s.top().getPre() == preOfLastOpen)){
 						// all descendants of this Match have been traversed by now.
