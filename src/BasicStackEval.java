@@ -1,8 +1,3 @@
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,12 +6,12 @@ import org.xml.sax.*;
 
 public class BasicStackEval implements ContentHandler{
 
-		private PatternNode root;												// the pattern tree
-		private static TPEStack rootStack; 											// stack for the root of the tree
+		//private PatternNode root;												// the pattern tree
+		private static TPEStack rootStack; 										// stack for the root of the tree
 		private int currentPre = 1;												// counter for the current element in the XML file
 		private Stack <Integer> preOfOpenNodes = new Stack<Integer>();			// stack with the preNumber for all elements opened but not closed yet					
 		private Map<Integer,String> texts = new HashMap<Integer,String>();		// list to collect text 
-		private Printer printer = new Printer();
+		private Printer printer = new Printer(texts);
 		
 		@Override
 		public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
@@ -24,7 +19,7 @@ public class BasicStackEval implements ContentHandler{
 			Match m;
 			List<TPEStack> descendantStacks = rootStack.getDescendantStacks(); 
 			for(TPEStack s : descendantStacks){
-				if(localName.equals(s.getPatternNode().getName())
+				if((localName.equals(s.getPatternNodeName()) || s.getPatternNodeName().equals("wildcard"))
 						&& (s.getTPEStack() == null || (s.getTPEStack().top() != null && s.getTPEStack().top().getStatus() == 1))){
 
 					if(s.getTPEStack() == null)
@@ -36,6 +31,7 @@ public class BasicStackEval implements ContentHandler{
 					s.push(m); 
 					if(s.getTPEStack() != null)
 						s.getTPEStack().addChildMatchToMatch(s.getPatternNode(),m);
+					break;
 				}
 			}
 			preOfOpenNodes.push(currentPre);
@@ -88,8 +84,9 @@ public class BasicStackEval implements ContentHandler{
 			//printer.printTuplesNumbersInFile(root, rootStack, texts);
 			//printer.printTuplesTextInFile(root, rootStack, texts);
 
-			printer.printFullTuplesNumbers(rootStack);
-			printer.printMarkedTuplesNumbers(rootStack);
+			printer.printFullTuplesNumbers(rootStack, System.out);
+			printer.printMarkedTuplesNumbers(rootStack, System.out);
+			printer.printMarkedSubtrees(rootStack, System.out);
 		}
 			
 		
@@ -106,7 +103,7 @@ public class BasicStackEval implements ContentHandler{
 						// now look for Match objects having this pre number:
 				
 				for(TPEStack s : descendantStacks){
-					if (localName.equals(s.getPatternNode().getName())
+					if ((localName.equals(s.getPatternNode().getName()) || s.getPatternNodeName().equals("wildcard"))
 						&& (s.top() == null || s.top().getStatus() == 1)
 							&& (s.top() == null || s.top().getPre() == preOfLastOpen)){
 						// all descendants of this Match have been traversed by now.
@@ -118,12 +115,21 @@ public class BasicStackEval implements ContentHandler{
 						// check if m has child matches for all children of its pattern node
 						List<PatternNode> children = s.getPatternNode().getChildren(); 
 						
+						//check for value predicate
+						String valuePredicate = m.getPatternNode().getText();
+						if(valuePredicate != null && !valuePredicate.equals(texts.get(m.getPre()))){
+							s.removeMatch(m);
+							if(m.getParentMatch() != null)
+								m.getParentMatch().removeChildMatch(s.getPatternNode(),m);
+							break;
+						}
+							
+						//if the current match doesn't have all the required children matches
 						for (PatternNode pChild: children){
 						// pChild is a child of the query node for which m was created
 							Map<PatternNode, List<Match>> matchChildren = m.getChildren();
-							if (matchChildren.get(pChild) == null || matchChildren.get(pChild).size() == 0){		
-								//if m lacks a child Match for the pattern node pChild
-								// we remove m from its Stack, detach it from its parent etc.
+							if (!pChild.isOptional() &&
+									(matchChildren.get(pChild) == null || matchChildren.get(pChild).size() == 0)){		
 								s.removeMatch(m);
 								if(m.getParentMatch() != null)
 									m.getParentMatch().removeChildMatch(s.getPatternNode(),m);
