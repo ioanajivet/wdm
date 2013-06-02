@@ -30,14 +30,10 @@ public class TPEStack {
 	
 	// gets the stacks for all descendants of p
 	public List<TPEStack> getDescendantStacks() {
-		//TODO - for each child get all descendants; = flatten childStacks
 		List<TPEStack> descendants = new ArrayList<TPEStack>();
-		//descendants.addAll(childStacks);
-		for(TPEStack st:childStacks){
-	//		System.out.println(st.getPatternNodeName());
-		//	System.out.println("Size: " + st.getDescendantStacks().size());
+		for(TPEStack st:childStacks)
 			descendants.addAll(st.getDescendantStacks());
-		}
+		
 		descendants.add(this);
 		return descendants;
 	}
@@ -79,7 +75,6 @@ public class TPEStack {
 	}
 	
 	public void removeMatch(Match m) {
-		// TODO Auto-generated method stub
 		matches.remove(m);
 	}
 	
@@ -90,9 +85,10 @@ public class TPEStack {
 	public void populateTPEStacks(){
 		//for each children, recursively create the TPEstacks for the descendants
 		List<PatternNode> children = p.getChildren();
-		//childStacks.add(this);
+		
 		if (children.size() == 0)
 			return;
+		
 		for(PatternNode child: children){
 			TPEStack stack = new TPEStack(child, this);
 			stack.populateTPEStacks();
@@ -101,9 +97,7 @@ public class TPEStack {
 	}
 
 	public void addChildMatchToMatch(PatternNode child, Match m) {
-		// TODO Auto-generated method stub
 		top().addChildMatch(child, m);
-
 	}
 		
 }

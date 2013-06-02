@@ -22,7 +22,6 @@ public class InputParser implements ContentHandler{
 			System.out.println("Opening tag : " + localName);
 			boolean marked = false;
 			boolean optional = false;
-			//String wildcard = null;
 			
 			for(int i=0; i<attributes.getLength(); i++){
 				String atrName = "@" + attributes.getLocalName(i);

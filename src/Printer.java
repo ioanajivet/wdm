@@ -1,6 +1,4 @@
 
-import java.io.File;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +13,7 @@ public class Printer {
 		this.textNodes = text;
 	}
 	
+	//recursively, get the tuples of each child match and append them to the value of the current match
 	private List<String> printFullTuples(Match current){
 		String currentText = current.getPre() + "\t";
 		List<String> childStrings = new ArrayList<String>();
@@ -217,24 +216,5 @@ public class Printer {
 		else
 			ps.println("\nNo matching patterns found.");
 	}
-	
-	//TODO print in files
-		public void printTuplesInFile(PatternNode root, TPEStack rootStack) {
-			
-			try {
-				File file = new File("results/results_numbers.txt");
-	 
-				if (!file.exists()) {
-					file.createNewFile();
-				}
-	 
-				PrintStream ps = new PrintStream(file);
-				printFullTuplesNumbers(rootStack, ps);
-	 
-			} catch (IOException e) {
-				e.printStackTrace();
-			}	
-		}
-
 		
 }
