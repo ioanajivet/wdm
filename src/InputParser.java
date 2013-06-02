@@ -73,7 +73,7 @@ public class InputParser implements ContentHandler{
 		public void endDocument() throws SAXException {
 			
 			System.out.println("End the parsing of input tree pattern xml");
-			BasicStackEval eval = new BasicStackEval();
+			StackEval eval = new StackEval();
 			// Pop the last element(root) and initialize the stack
 			eval.initializeStack(treeStack.pop());
 	

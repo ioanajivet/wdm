@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.Stack;
 import org.xml.sax.*;
 
-public class BasicStackEval implements ContentHandler{
+public class StackEval implements ContentHandler{
 
 		//private PatternNode root;												// the pattern tree
 		private static TPEStack rootStack; 										// stack for the root of the tree
@@ -40,8 +40,6 @@ public class BasicStackEval implements ContentHandler{
 			for(int i=0; i<attributes.getLength(); i++){
 				String atrName = "@" + attributes.getLocalName(i);
 				String atrValue = attributes.getValue(i);
-				// similarly look for query nodes possibly matched
-				// by the attributes of the currently started element
 			
 				for (TPEStack s : descendantStacks){
 					if (atrName.equals(s.getPatternNode().getName()) && (s.getTPEStack() == null 
@@ -51,7 +49,6 @@ public class BasicStackEval implements ContentHandler{
 						else 								//this is a descendant in the tree pattern
 							m = new Match(currentPre, s.getTPEStack().top(), s);
 
-						//m.addText(atrValue);
 						texts.put(currentPre, atrValue);
 						m.close();
 						s.push(m); 
