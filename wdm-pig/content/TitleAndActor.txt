@@ -1,0 +1,20 @@
+Heat	ValKilmer	1959	Chris Shiherlis
+Heat	RobertDe Niro	1943	Neil McCauley
+Heat	AlPacino	1940	Lt. Vincent Hanna
+Heat	JonVoight	1938	Nate
+Unforgiven	ClintEastwood	1930	William 'Bill' Munny
+Unforgiven	MorganFreeman	1937	Ned Logan
+Unforgiven	GeneHackman	1930	Little Bill Daggett
+Lost in Translation	BillMurray	1950	Bob Harris
+Lost in Translation	Scarlett Johansson	1984	Charlotte
+Spider-Man	TobeyMaguire	1975	Spider-Man / Peter Parker
+Spider-Man	WillemDafoe	1955	Green Goblin / Norman Osborn
+Spider-Man	KirstenDunst	1982	Mary Jane Watson
+A History of Violence	VigoMortensen	1958	Tom Stall
+A History of Violence	MariaBello	1967	Eddie Stall
+A History of Violence	WilliamHurt	1950	Richie Cusack
+A History of Violence	EdHarris	1950	Carl Fogarty
+Match Point	JonathanRhys Meyers	1977	Chris Wilton
+Match Point	Scarlett Johansson	1984	Nola Rice
+Marie Antoinette	Jason Schwartzman	1980	Louis XVI
+Marie Antoinette	KirstenDunst	1982	Marie Antoinette

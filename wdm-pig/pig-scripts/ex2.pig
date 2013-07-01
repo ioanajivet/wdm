@@ -1,0 +1,7 @@
+dir_and_title  = LOAD 'wdm-pig/content/DirAndTitle.txt' USING PigStorage('\t') AS ( 
+                DIR_NAME:chararray,
+                TITLE:chararray,
+                REL_YEAR:int);
+grouped_by_dir = GROUP dir_and_title BY DIR_NAME;
+result = FOREACH grouped_by_dir GENERATE $0, $1.TITLE;
+STORE result INTO 'wdm-pig/pig-results/ex2';
